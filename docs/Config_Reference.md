@@ -2116,7 +2116,7 @@ a shutdown_speed equal to max_power.
 Controller cooling fan (one may define any number of sections with a
 "controller_fan" prefix). A "controller fan" is a fan that will be
 enabled whenever its associated heater or any configured stepper
-driver is active. The fan will stop, whenever an idle_timeout is
+driver is active. The fan will stop whenever an idle_timeout is
 reached to ensure no overheating will occur after deactivating a
 watched component.
 
@@ -3096,7 +3096,7 @@ symbols i.e. `~my_display_glyph~`
 #   required if hd44780_data is specified.
 ```
 
-## [display my_display]
+## [display my_extra_display]
 
 If a primary [display] section has been defined in printer.cfg as
 shown above it is possible to define multiple auxiliary displays. Note
@@ -3138,54 +3138,59 @@ List of actions for menu element:
 #       command - basic menu element with various script triggers
 #       input   - same like 'command' but has value changing capabilities.
 #                 Press will start/stop edit mode.
-#       list    - it allows for menu items to be grouped together in a scrollable list.
-#                 Add to the list by creating menu configurations
-#                 using "some_list" as a prefix - for example: [menu some_list some_item_in_the_list]
-#       vsdlist - same as 'list' but will append files from virtual sdcard (will be removed in the future)
+#       list    - it allows for menu items to be grouped together in a
+#                 scrollable list.  Add to the list by creating menu
+#                 configurations using "some_list" as a prefix - for
+#                 example: [menu some_list some_item_in_the_list]
+#       vsdlist - same as 'list' but will append files from virtual sdcard
+#                 (will be removed in the future)
 #name:
 #   Name of menu item - evaluated as a template.
 #enable:
 #   Template that evaluates to True or False.
 #index:
-#   Position where an item needs to be inserted in list
-#   By default the item is added at the end. This parameter is optional.
+#   Position where an item needs to be inserted in list. By default
+#   the item is added at the end.
 
 #[menu some_list]
 #type: list
 #name:
 #enable:
+#   See above for a description of these parameters.
 
 #[menu some_list some_command]
 #type: command
 #name:
 #enable:
+#   See above for a description of these parameters.
 #gcode:
-#   Script to run on button click or long click. Evaluated as a template.
+#   Script to run on button click or long click. Evaluated as a
+#   template.
 
 #[menu some_list some_input]
 #type: input
 #name:
 #enable:
+#   See above for a description of these parameters.
 #input:
 #   Initial value to use when editing - evaluated as a template.
 #   Result must be float.
 #input_min:
-#   Minimum value of range - evaluated as a template.
-#   Default -99999.
+#   Minimum value of range - evaluated as a template. Default -99999.
 #input_max:
-#   Maximum value of range - evaluated as a template.
-#   Default 99999.
+#   Maximum value of range - evaluated as a template. Default 99999.
 #input_step:
-#   Editing step - Must be a positive integer or float value.
-#   It has internal fast rate step. When (input_max - input_min) / input_step > 100
-#   then fast rate step is  10 * input_step else fast rate step is same input_step
+#   Editing step - Must be a positive integer or float value. It has
+#   internal fast rate step. When "(input_max - input_min) /
+#   input_step > 100" then fast rate step is 10 * input_step else fast
+#   rate step is same input_step.
 #realtime:
-#   This attribute accepts static boolean value.
-#   When enabled then gcode script is run after each value change.
-#   The default is False. This parameter is optional.
+#   This attribute accepts static boolean value. When enabled then
+#   gcode script is run after each value change. The default is False.
 #gcode:
-#   Script to run on button click, long click or value change. Evaluated as a template.
-#   The button click will trigger the edit mode start or end.
+#   Script to run on button click, long click or value change.
+#   Evaluated as a template. The button click will trigger the edit
+#   mode start or end.
 ```
 
 # Filament sensors
