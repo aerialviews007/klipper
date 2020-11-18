@@ -966,6 +966,7 @@ Where x is the (0,0) point on the bed
 #   If retries are enabled then retry if largest and smallest probed
 #   points differ more than retry_tolerance.
 ```
+
 ## [skew_correction]
 
 Printer Skew Correction. It is possible to use software to correct
