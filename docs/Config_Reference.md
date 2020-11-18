@@ -68,32 +68,33 @@ max_accel: 3000
 
 Stepper motor definitions. Different printer types (as specified by
 the "kinematics" option in the [printer] config section) require
-different names for the stepper (eg, stepper_x vs stepper_a). Below
-are common stepper definitions.
+different names for the stepper (eg, `stepper_x` vs `stepper_a`).
+Below are common stepper definitions.
+
 ```
 [stepper_x]
-step_pin: ar54
+step_pin:
 #   Step GPIO pin (triggered high). This parameter must be provided.
-dir_pin: ar55
+dir_pin:
 #   Direction GPIO pin (high indicates positive direction). This
 #   parameter must be provided.
-enable_pin: !ar38
+enable_pin:
 #   Enable pin (default is enable high; use ! to indicate enable
 #   low). If this parameter is not provided then the stepper motor
 #   driver must always be enabled.
-step_distance: .0225
+step_distance:
 #   Distance in mm that each step causes the axis to travel. This
 #   parameter must be provided.
-endstop_pin: ^ar3
+endstop_pin:
 #   Endstop switch detection pin. This parameter must be provided for
 #   the X, Y, and Z steppers on cartesian style printers.
 #position_min: 0
 #   Minimum valid distance (in mm) the user may command the stepper to
 #   move to.  The default is 0mm.
-position_endstop: 0
+position_endstop:
 #   Location of the endstop (in mm). This parameter must be provided
 #   for the X, Y, and Z steppers on cartesian style printers.
-position_max: 200
+position_max:
 #   Maximum valid distance (in mm) the user may command the stepper to
 #   move to. This parameter must be provided for the X, Y, and Z
 #   steppers on cartesian style printers.
@@ -314,8 +315,8 @@ Only parameters specific to polar printers are described here - see
 [common kinematic settings](#common-kinematic-settings) for available
 parameters.
 
-POLAR KINEMATICS ARE A WORK IN PROGRESS. Moves around the 0,0 position
-are known to not work properly.
+POLAR KINEMATICS ARE A WORK IN PROGRESS. Moves around the `0,0`
+position are known to not work properly.
 
 ```
 [printer]
@@ -329,6 +330,15 @@ step_distance: 0.001963495
 #   moves the bed in radians (for example, a 1.8 degree stepper with
 #   16 micro-steps would be 2 * pi * (1.8 / 360) / 16 == 0.001963495).
 #   This parameter must be provided.
+max_z_velocity:
+#   This sets the maximum velocity (in mm/s) of movement along the z
+#   axis. This setting can be used to restrict the maximum speed of
+#   the z stepper motor. The default is to use max_velocity for
+#   max_z_velocity.
+max_z_accel:
+#   This sets the maximum acceleration (in mm/s^2) of movement along
+#   the z axis. It limits the acceleration of the z stepper motor. The
+#   default is to use max_accel for max_z_accel.
 
 # The stepper_arm section is used to describe the stepper controlling
 # the carriage on the arm.
@@ -487,8 +497,8 @@ Configuration of the primary micro-controller.
 [mcu]
 serial:
 #   The serial port to connect to the MCU. If unsure (or if it
-#   changes) see the "Where's my serial port?" section of the
-#   FAQ. This parameter must be provided.
+#   changes) see the "Where's my serial port?" section of the FAQ.
+#   This parameter must be provided.
 #baud: 250000
 #   The baud rate to use. The default is 250000.
 #pin_map:
@@ -523,10 +533,10 @@ dir_pin:
 enable_pin:
 step_distance:
 #   See the "stepper" section for a description of the above parameters.
-nozzle_diameter: 0.500
+nozzle_diameter: 0.400
 #   Diameter of the nozzle orifice (in mm). This parameter must be
 #   provided.
-filament_diameter: 3.500
+filament_diameter: 1.750
 #   The nominal diameter of the raw filament (in mm) as it enters the
 #   extruder. This parameter must be provided.
 #max_extrude_cross_section:
@@ -566,7 +576,7 @@ filament_diameter: 3.500
 #   default is 0.040 (40 milliseconds).
 #
 # The remaining variables describe the extruder heater.
-heater_pin: ar10
+heater_pin:
 #   PWM output pin controlling the heater. This parameter must be
 #   provided.
 #max_power: 1.0
@@ -583,7 +593,7 @@ sensor_type: EPCOS 100K B57560G104F
 #   450", and "TDK NTCG104LH104JT1". See the "Heaters and temperature
 #   sensors" section for other sensors. This parameter must be
 #   provided.
-sensor_pin: analog13
+sensor_pin:
 #   Analog input pin connected to the sensor. This parameter must be
 #   provided.
 #pullup_resistor: 4700
@@ -635,8 +645,8 @@ max_temp: 210
 #   temperature ever fall outside this range then the micro-controller
 #   will go into a shutdown state. This check can help detect some
 #   heater and sensor hardware failures. Set this range just wide
-#   enough so that reasonable temperatures do not result in an
-#   error. These parameters must be provided.
+#   enough so that reasonable temperatures do not result in an error.
+#   These parameters must be provided.
 ```
 
 ## [heater_bed]
@@ -652,46 +662,45 @@ sensor_pin:
 control:
 min_temp:
 max_temp:
+#   See the "extruder" section for a description of the above parameters.
 ```
 
 # Bed level support
 
 ## [bed_mesh]
 
-Mesh Bed Leveling. One may define a [bed_mesh] config section to
-enable move transformations that offset the z axis based on a mesh
-generated from probed points. Note that bed_mesh and bed_tilt are
-incompatible, both cannot be defined. When using a probe to home the
-z-axis, it is recommended to define a [homing_override] section in
-printer.cfg to home toward the center of the print area.
+Mesh Bed Leveling. One may define a bed_mesh config section to enable
+move transformations that offset the z axis based on a mesh generated
+from probed points. When using a probe to home the z-axis, it is
+recommended to define a safe_z_home section in printer.cfg to home
+toward the center of the print area.
 
 Visual Examples:
-```
-  rectangular bed, probe_count = 3,3:
-              x---x---x (max_point)
-              |
-              x---x---x
-                      |
-  (min_point) x---x---x
 
-  round bed, round_probe_count = 5, bed_radius = r:
-                 x (0,r) end
-               /
+ rectangular bed, probe_count = 3,3:
+             x---x---x (max_point)
+             |
              x---x---x
-                       \
-  (-r,0) x---x---x---x---x (r,0)
-           \
-             x---x---x
-                   /
-                 x  (0,-r) start
+                     |
+ (min_point) x---x---x
 
-```
+ round bed, round_probe_count = 5, bed_radius = r:
+                x (0,r) end
+              /
+            x---x---x
+                      \
+ (-r,0) x---x---x---x---x (r,0)
+          \
+            x---x---x
+                  /
+                x  (0,-r) start
+
 
 ```
 [bed_mesh]
 #speed: 50
-#   The speed (in mm/s) of non-probing moves during the
-#   calibration. The default is 50.
+#   The speed (in mm/s) of non-probing moves during the calibration.
+#   The default is 50.
 #horizontal_move_z: 5
 #   The height (in mm) that the head should be commanded to move to
 #   just prior to starting a probe operation. The default is 5.
@@ -769,8 +778,9 @@ Visual Examples:
 
 ## [bed_tilt]
 
-Bed tilt compensation. One may define a [bed_tilt] config section to
-enable move transformations that account for a tilted bed.
+Bed tilt compensation. One may define a bed_tilt config section to
+enable move transformations that account for a tilted bed. Note that
+bed_mesh and bed_tilt are incompatible; both cannot be defined.
 
 ```
 [bed_tilt]
@@ -843,7 +853,7 @@ config section to enable a BED_SCREWS_ADJUST g-code command.
 ## [screws_tilt_adjust]
 
 Tool to help adjust bed screws tilt using Z probe. One may define a
-[screws_tilt_adjust] config section to enable a SCREWS_TILT_CALCULATE
+screws_tilt_adjust config section to enable a SCREWS_TILT_CALCULATE
 g-code command.
 
 ```
@@ -926,7 +936,7 @@ WARNING: Using this on a moving bed may lead to undesirable results.
 If this section is present then a QUAD_GANTRY_LEVEL extended G-Code
 command becomes available. This routine assumes the following Z motor
 configuration:
-```
+
  ----------------
  |Z1          Z2|
  |  ---------   |
@@ -935,7 +945,7 @@ configuration:
  |  x--------   |
  |Z           Z3|
  ----------------
-```
+
 Where x is the (0,0) point on the bed
 
 ```
@@ -997,18 +1007,18 @@ home_xy_position:
 #   Speed at which the toolhead is moved to the safe Z home
 #   coordinate. The default is 50 mm/s
 #z_hop:
-#   Lift the Z axis prior to homing. This is applied to any homing
-#   command, even if it doesn't home the Z axis. If the Z axis is
-#   already homed and the current Z position is less than z_hop, then
-#   this will lift the head to a height of z_hop. If the Z axis is not
-#   already homed, then prior to any XY homing movement the Z axis
-#   boundary checks are disabled and the head is lifted by z_hop. If
-#   z_hop is specified, be sure to home the Z immediately after any XY
-#   home requests so that the Z boundary checks are accurate. The
-#   default is to not implement Z hop.
+#   Distance (in mm) to lift the Z axis prior to homing. This is
+#   applied to any homing command, even if it doesn't home the Z axis.
+#   If the Z axis is already homed and the current Z position is less
+#   than z_hop, then this will lift the head to a height of z_hop. If
+#   the Z axis is not already homed, then prior to any XY homing
+#   movement the Z axis boundary checks are disabled and the head is
+#   lifted by z_hop. If z_hop is specified, be sure to home the Z
+#   immediately after any XY home requests so that the Z boundary
+#   checks are accurate. The default is to not implement Z hop.
 #z_hop_speed: 20.0
-#   Speed at which the Z axis is lifted prior to homing. The default
-#   is 20mm/s.
+#   Speed (in mm/s) at which the Z axis is lifted prior to homing. The
+#   default is 20mm/s.
 #move_to_previous: False
 #   When set to True, xy are reset to their previous positions after z
 #   homing. The default is False.
@@ -1017,7 +1027,7 @@ home_xy_position:
 ## [homing_override]
 
 Homing override. One may use this mechanism to run a series of g-code
-commands in place of a G28 found in the normal g-code input.  This may
+commands in place of a G28 found in the normal g-code input. This may
 be useful on printers that require a specific procedure to home the
 machine.
 
@@ -1123,23 +1133,24 @@ G-Code macros (one may define any number of sections with a
 #   cause complex and unexpected results. The default is to not
 #   override an existing G-Code command.
 ```
+
 ## [delayed_gcode]
 
 Execute a gcode on a set delay.
 
 ```
 [delayed_gcode my_delayed_gcode]
-#initial_duration: 0.
+gcode:
+#   A list of G-Code commands to execute when the delay duration has
+#   elapsed. G-Code templates are supported. This parameter must be
+#   provided.
+#initial_duration: 0.0
 #   The duration of the initial delay (in seconds). If set to a
 #   non-zero value the delayed_gcode will execute the specified number
 #   of seconds after the printer enters the "ready" state. This can be
 #   useful for initialization procedures or a repeating delayed_gcode.
 #   If set to 0 the delayed_gcode will not execute on startup.
 #   Default is 0.
-#gcode:
-#   A list of G-Code commands to execute when the delay duration has
-#   elapsed. G-Code templates are supported. This parameter must be
-#   provided.
 ```
 
 ## [idle_timeout]
@@ -1261,6 +1272,7 @@ Enable the "M118" and "RESPOND" extended commands.
 ## [input_shaper]
 
 Enables input shaping.
+
 ```
 [input_shaper]
 #shaper_freq_x: 0
@@ -1333,10 +1345,10 @@ cs_pin:
 
 ## [resonance_tester]
 
-Support for resonance testing and automatic input shaper
-calibration. In order to use most of the functionality of this module,
-additional software dependencies must be installed; refer to
-docs/Measuring_Resonances.md for more information.
+Support for resonance testing and automatic input shaper calibration.
+In order to use most of the functionality of this module, additional
+software dependencies must be installed; refer to
+[Measuring Resonances](Measuring_Resonances.md) for more information.
 
 ```
 [resonance_tester]
@@ -1423,7 +1435,7 @@ then do not define a position_endstop in the stepper_z config section.
 
 ```
 [probe]
-pin: ar15
+pin:
 #   Probe detection pin. This parameter must be provided.
 #x_offset: 0.0
 #   The distance (in mm) between the probe and the nozzle along the
@@ -1552,18 +1564,18 @@ pins such as "extra_mcu:ar9" may then be used elsewhere in the config
 
 Multi-stepper axes. On a cartesian style printer, the stepper
 controlling a given axis may have additional config blocks defining
-steppers that should be stepped in concert with the primary
-stepper. One may define any number of sections with a numeric suffix
-starting at 1 (for example, "stepper_z1", "stepper_z2", etc.).
+steppers that should be stepped in concert with the primary stepper.
+One may define any number of sections with a numeric suffix starting
+at 1 (for example, "stepper_z1", "stepper_z2", etc.).
 
 ```
 [stepper_z1]
-#step_pin: ar36
-#dir_pin: ar34
-#enable_pin: !ar30
-#step_distance: .005
-#   See "stepper" section for the definition of the above parameters.
-#endstop_pin: ^ar19
+#step_pin:
+#dir_pin:
+#enable_pin:
+#step_distance:
+#   See the "stepper" section for the definition of the above parameters.
+#endstop_pin:
 #   If an endstop_pin is defined for the additional stepper then the
 #   stepper will home until the endstop is triggered. Otherwise, the
 #   stepper will home until the endstop on the primary stepper for the
@@ -2224,7 +2236,7 @@ command. For example: SET_SERVO SERVO=my_servo ANGLE=180
 
 ```
 [servo my_servo]
-pin: ar7
+pin:
 #   PWM output pin controlling the servo. This parameter must be
 #   provided.
 #maximum_servo_angle: 180
@@ -3238,7 +3250,7 @@ TSLl401CL Based Filament Width Sensor
 
 ```
 [tsl1401cl_filament_width_sensor]
-#pin: analog5
+#pin:
 #default_nominal_filament_diameter: 1.75 # (mm)
 #   Maximum allowed filament diameter difference as mm.
 #max_difference: 0.2
@@ -3253,8 +3265,8 @@ Hall filament width sensor (see
 
 ```
 [hall_filament_width_sensor]
-adc1: analog11
-adc2: analog12
+adc1:
+adc2:
 #   Analog input pins connected to the sensor. These parameters must
 #   be provided.
 #cal_dia1: 1.50
