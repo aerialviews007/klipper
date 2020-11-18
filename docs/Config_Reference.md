@@ -927,14 +927,14 @@ If this section is present then a QUAD_GANTRY_LEVEL extended G-Code
 command becomes available. This routine assumes the following Z motor
 configuration:
 ```
-# ----------------
-# |Z1          Z2|
-# |  ---------   |
-# |  |       |   |
-# |  |       |   |
-# |  x--------   |
-# |Z           Z3|
-# ----------------
+ ----------------
+ |Z1          Z2|
+ |  ---------   |
+ |  |       |   |
+ |  |       |   |
+ |  x--------   |
+ |Z           Z3|
+ ----------------
 ```
 Where x is the (0,0) point on the bed
 
